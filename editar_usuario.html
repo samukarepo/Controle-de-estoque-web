@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Usuário</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Editar Usuário</h1>
+    <form method="POST">
+        <div>
+            <label for="tipo">Tipo:</label>
+            <select name="tipo" id="tipo">
+                <option value="administrador" {% if usuario.tipo == 'administrador' %}selected{% endif %}>Administrador</option>
+                <option value="operador" {% if usuario.tipo == 'operador' %}selected{% endif %}>Operador</option>
+            </select>
+        </div>
+        <button type="submit">Salvar Tipo</button>
+    </form>
+    <p><a href="{{ url_for('listar_usuarios') }}">Voltar para a Lista de Usuários</a></p>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

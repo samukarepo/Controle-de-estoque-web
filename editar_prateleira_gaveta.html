@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Prateleira/Gaveta no Armário {{ armario.nome }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                {% if session['user_id'] %}
+                    <li><a href="{{ url_for('index') }}">Início</a></li>
+                    <li><a href="{{ url_for('listar_produtos') }}">Produtos</a></li>
+                    <li><a href="{{ url_for('listar_depositos') }}">Depósitos</a></li>
+                    <li><a href="{{ url_for('listar_usuarios') }}">Usuários</a></li>
+                    <li><a href="{{ url_for('logout') }}">Sair</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('registrar') }}">Registrar</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Editar Prateleira/Gaveta no Armário: {{ armario.nome }}</h1>
+        {% if erro %}
+            <p class="erro">{{ erro }}</p>
+        {% endif %}
+        <form method="POST">
+            <div>
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" name="tipo" required>
+                    <option value="prateleira" {% if prateleira_gaveta.tipo == 'prateleira' %}selected{% endif %}>Prateleira</option>
+                    <option value="gaveta" {% if prateleira_gaveta.tipo == 'gaveta' %}selected{% endif %}>Gaveta</option>
+                </select>
+            </div>
+            <div>
+                <label for="numero">Número/Identificação:</label>
+                <input type="text" id="numero" name="numero" value="{{ prateleira_gaveta.numero }}" required>
+            </div>
+            <div>
+                <label for="descricao">Descrição (opcional):</label>
+                <textarea id="descricao" name="descricao">{{ prateleira_gaveta.descricao or '' }}</textarea>
+            </div>
+            <button type="submit">Salvar Alterações</button>
+            <a href="{{ url_for('listar_prateleiras_gavetas', armario_id=armario['id']) }}">Cancelar</a>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; {{ datetime.datetime.now().year }} Seu Sistema de Estoque</p>
+    </footer>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

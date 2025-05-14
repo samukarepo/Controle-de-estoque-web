@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Armário ao Depósito {{ deposito.nome }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                {% if session['user_id'] %}
+                    <li><a href="{{ url_for('index') }}">Início</a></li>
+                    <li><a href="{{ url_for('listar_produtos') }}">Produtos</a></li>
+                    <li><a href="{{ url_for('listar_depositos') }}">Depósitos</a></li>
+                    <li><a href="{{ url_for('listar_usuarios') }}">Usuários</a></li>
+                    <li><a href="{{ url_for('logout') }}">Sair</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('registrar') }}">Registrar</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Adicionar Armário ao Depósito: {{ deposito.nome }}</h1>
+        {% if erro %}
+            <p class="erro">{{ erro }}</p>
+        {% endif %}
+        <form method="POST">
+            <div>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+            <div>
+                <label for="descricao">Descrição (opcional):</label>
+                <textarea id="descricao" name="descricao"></textarea>
+            </div>
+            <button type="submit">Salvar</button>
+            <a href="{{ url_for('listar_armarios', deposito_id=deposito.id) }}">Cancelar</a>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; {{ datetime.datetime.now().year }} Seu Sistema de Estoque</p>
+    </footer>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

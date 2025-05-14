@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .erro {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Login</h1>
+    {% if erro %}
+    <p class="erro">{{ erro }}</p>
+    {% endif %}
+    <form method="POST">
+        <div>
+            <label for="username">Nome de Usuário:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Entrar</button>
+    </form>
+    <p>Não tem uma conta? <a href="/registrar">Registre-se</a></p>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

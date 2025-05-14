@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adicionar Usuário</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .erro {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Adicionar Usuário</h1>
+    {% if erro %}
+    <p class="erro">{{ erro }}</p>
+    {% endif %}
+    <form method="POST">
+        <div>
+            <label for="username">Nome de Usuário:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div>
+            <label for="tipo">Tipo:</label>
+            <select name="tipo" id="tipo">
+                <option value="administrador">Administrador</option>
+                <option value="operador">Operador</option>
+            </select>
+        </div>
+        <button type="submit">Adicionar Usuário</button>
+    </form>
+    <p><a href="{{ url_for('listar_usuarios') }}">Voltar para a Lista de Usuários</a></p>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

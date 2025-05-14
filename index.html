@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Página Inicial</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Bem-vindo ao Sistema de Controle de Estoque</h1>
+    {% if 'user_id' in session %}
+        <p>Usuário logado como: <strong>{{ session['user_type'] }}</strong></p>
+        <ul>
+            <li><a href="/produtos">Estoque</a></li>
+            {% if session['user_type'] == 'administrador' %}
+            <li><a href="/usuarios">Gerenciar Usuários</a></li>
+            {% endif %}
+            <li><a href="/depositos">Depositos</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    {% else %}
+        <p>Por favor, faça login.</p>
+        <p><a href="/login">Login</a> | <a href="/registrar">Registrar</a></p>
+    {% endif %}
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

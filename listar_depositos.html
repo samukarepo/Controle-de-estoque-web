@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Depósitos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Lista de Depósitos</h1>
+
+    {% if depositos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for deposito in depositos %}
+            <tr>
+                <td>{{ deposito.nome }}</td>
+                <td>{{ deposito.descricao }}</td>
+                <td>
+                    <a href="{{ url_for('editar_deposito', id=deposito.id) }}">Editar</a> |
+                    <a href="{{ url_for('excluir_deposito', id=deposito.id) }}">Excluir</a> |
+                    <a href="{{ url_for('listar_armarios', deposito_id=deposito.id) }}">Ver Armários</a> 
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Não há depósitos cadastrados.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('adicionar_deposito') }}">Adicionar Novo Depósito</a></p>
+    <p><a href="{{ url_for('index') }}">Voltar para a Página Inicial</a></p>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

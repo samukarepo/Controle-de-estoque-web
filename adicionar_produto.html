@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adicionar Produto</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .erro {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Adicionar Produto</h1>
+    {% if erro_codigo %}
+    <p class="erro">{{ erro_codigo }}</p>
+    {% endif %}
+    {% if erro_nome %}
+    <p class="erro">{{ erro_nome }}</p>
+    {% endif %}
+    <form method="POST">
+        <div>
+            <label for="codigo">Código:</label>
+            <input type="text" id="codigo" name="codigo" required>
+        </div>
+        <div>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
+        </div>
+        <div>
+            <label for="unidade_medida">Unidade de Medida:</label>
+            <input type="text" id="unidade_medida" name="unidade_medida" required>
+        </div>
+        <div>
+            <label for="estoque_minimo">Estoque Mínimo:</label>
+            <input type="number" id="estoque_minimo" name="estoque_minimo" value="0" required>
+        </div>
+        <div>
+            <label for="deposito_id">Depósito:</label>
+            <select id="deposito_id" name="deposito_id" required>
+                <option value="">Selecione o Depósito</option>
+                {% for deposito in depositos %}
+                    <option value="{{ deposito.id }}">{{ deposito.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="armario_id">Armário:</label>
+            <select id="armario_id" name="armario_id">
+                <option value="">Selecione o Armário (opcional)</option>
+                {% for armario in armarios %}
+                    <option value="{{ armario.id }}" data-deposito-id="{{ armario.deposito_id }}">{{ armario.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="prateleira_gaveta_id">Prateleira/Gaveta (opcional):</label>
+            <select id="prateleira_gaveta_id" name="prateleira_gaveta_id">
+                <option value="">Selecione a Prateleira/Gaveta (opcional)</option>
+                {% for pg in prateleiras_gavetas %}
+                    <option value="{{ pg.id }}" data-armario-id="{{ pg.armario_id }}">{{ pg.tipo|capitalize }} {{ pg.numero }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">Salvar Produto</button>
+    </form>
+    <p><a href="{{ url_for('listar_produtos') }}">Voltar para a Lista</a> | <a href="{{ url_for('index') }}">Página Inicial</a></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const depositoSelect = document.getElementById('deposito_id');
+            const armarioSelect = document.getElementById('armario_id');
+            const prateleiraGavetaSelect = document.getElementById('prateleira_gaveta_id');
+
+            function filterOptions(parentSelect, childSelect, dataAttribute) {
+                const selectedParentId = parseInt(parentSelect.value);
+                Array.from(childSelect.options).forEach(option => {
+                    const parentId = parseInt(option.getAttribute(dataAttribute));
+                    if (isNaN(selectedParentId) || isNaN(parentId) || parentId === selectedParentId) {
+                        option.style.display = 'block';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                    // Reset child select if parent changes
+                    if (isNaN(selectedParentId)) {
+                        childSelect.value = '';
+                    }
+                });
+            }
+
+            depositoSelect.addEventListener('change', function() {
+                filterOptions(depositoSelect, armarioSelect, 'data-deposito-id');
+                prateleiraGavetaSelect.value = ''; // Reset prateleira/gaveta when deposito changes
+                filterOptions(armarioSelect, prateleiraGavetaSelect, 'data-armario-id');
+            });
+
+            armarioSelect.addEventListener('change', function() {
+                filterOptions(armarioSelect, prateleiraGavetaSelect, 'data-armario-id');
+            });
+
+            // Initial filtering on load (hide options that don't match the default selection, if any)
+            filterOptions(depositoSelect, armarioSelect, 'data-deposito-id');
+            filterOptions(armarioSelect, prateleiraGavetaSelect, 'data-armario-id');
+        });
+    </script>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

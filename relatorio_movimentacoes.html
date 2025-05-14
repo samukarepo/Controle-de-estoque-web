@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Relatório de Movimentações</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <h1>Relatório de Movimentações</h1>
+
+    <form method="POST">
+        <label for="tipo">Tipo de Movimentação:</label>
+        <select name="tipo" id="tipo" required>
+            <option value="entrada">Entrada</option>
+            <option value="saida">Saída</option>
+        </select><br>
+
+        <label for="deposito_id">Depósito:</label>
+        <select name="deposito_id" id="deposito_id" required>
+            {% for deposito in depositos %}
+            <option value="{{ deposito.id }}">{{ deposito.nome }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="data_inicio">Data Início:</label>
+        <input type="date" name="data_inicio" id="data_inicio" required><br>
+
+        <label for="data_fim">Data Fim:</label>
+        <input type="date" name="data_fim" id="data_fim" required><br>
+
+        <button type="submit">Gerar Relatório</button>
+    </form>
+    <h2>Resultados</h2>
+    {% if movimentacoes %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Quantidade</th>
+                <th>Produto</th>
+                <th>Depósito</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movimentacao in movimentacoes %}
+            <tr>
+                <td>{{ movimentacao.id }}</td>
+                <td>
+                    {% set date_obj = datetime.datetime.strptime(movimentacao.data, '%Y-%m-%d %H:%M:%S.%f') %}
+                    {{ date_obj.strftime('%d/%m/%Y') }}
+                </td>
+                <td>{{ movimentacao.tipo }}</td>
+                <td>{{ movimentacao.quantidade }}</td>
+                <td>{{ movimentacao.produto_nome }}</td>
+                <td>{{ movimentacao.deposito_nome }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Nenhuma movimentação encontrada com os filtros selecionados.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">Voltar para a Página Inicial</a></p>
+
+</body>
+
+
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Prateleiras/Gavetas - Armário: {{ armario.nome }} (Depósito: {{ deposito.nome }})</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Lista de Prateleiras/Gavetas - Armário: {{ armario.nome }}</h1>
+    <p>Depósito: {{ deposito.nome }}</p>
+
+    {% if prateleiras_gavetas %}
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Número</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pg in prateleiras_gavetas %}
+            <tr>
+                <td>{{ pg.tipo|capitalize }}</td>
+                <td>{{ pg.numero }}</td>
+                <td>{{ pg.descricao }}</td>
+                <td>
+                    <a href="{{ url_for('editar_prateleira_gaveta', id=pg.id) }}">Editar</a> |
+                    <a href="{{ url_for('excluir_prateleira_gaveta', id=pg.id) }}">Excluir</a> 
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Não há prateleiras ou gavetas cadastradas neste armário.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('adicionar_prateleira_gaveta', armario_id=armario.id) }}">Adicionar Nova Prateleira/Gaveta</a></p>
+    <p><a href="{{ url_for('listar_armarios', deposito_id=deposito.id) }}">Voltar para a Lista de Armários</a></p>
+    <p><a href="{{ url_for('listar_depositos') }}">Voltar para a Lista de Depósitos</a></p>
+    <p><a href="{{ url_for('index') }}">Voltar para a Página Inicial</a></p>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

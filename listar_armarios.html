@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Armários - Depósito: {{ deposito.nome }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Lista de Armários - Depósito: {{ deposito.nome }}</h1>
+
+    {% if armarios %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for armario in armarios %}
+            <tr>
+                <td>{{ armario.nome }}</td>
+                <td>{{ armario.descricao }}</td>
+                <td>
+                    <a href="{{ url_for('editar_armario', id=armario.id) }}">Editar</a> |
+                    <a href="{{ url_for('excluir_armario', id=armario.id) }}">Excluir</a> |
+                    <a href="{{ url_for('listar_prateleiras_gavetas', armario_id=armario.id) }}">Ver Prateleiras/Gavetas</a> 
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Não há armários cadastrados neste depósito.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('adicionar_armario', deposito_id=deposito.id) }}">Adicionar Novo Armário</a></p>
+    <p><a href="{{ url_for('listar_depositos') }}">Voltar para a Lista de Depósitos</a></p>
+    <p><a href="{{ url_for('index') }}">Voltar para a Página Inicial</a></p>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Itens no Armário: {{ armario.nome }} (Depósito: {{ deposito_nome }})</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Itens no Armário: {{ armario.nome }}</h1>
+    <p>Depósito: {{ deposito_nome }}</p>
+
+    {% if itens %}
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nome do Produto</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in itens %}
+            <tr>
+                <td>{{ item.codigo }}</td>
+                <td>{{ item.nome }}</td>
+                <td>{{ item.quantidade }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Não há itens localizados neste armário.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('listar_armarios', deposito_id=armario.deposito_id) }}">Voltar para a Lista de Armários</a></p>
+    <p><a href="{{ url_for('listar_depositos') }}">Voltar para a Lista de Depósitos</a></p>
+    <p><a href="{{ url_for('index') }}">Voltar para a Página Inicial</a></p>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+</html>

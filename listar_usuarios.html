@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Gerenciar Usuários</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <h1>Gerenciar Usuários</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome de Usuário</th>
+                <th>Tipo</th>
+                <th>Status</th>
+                <th>Data de Registro</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.username }}</td>
+                <td>{{ usuario.tipo }}</td>
+                <td>{{ usuario.status }}</td>
+                <td>{{ usuario.data_registro }}</td>
+                <td>
+                    {% if session['user_type'] == 'administrador' %}
+                    {% if usuario.status == 'pendente' %}
+                    <a href="{{ url_for('aprovar_usuario', id=usuario.id) }}">Aprovar</a> |
+                    <a href="{{ url_for('rejeitar_usuario', id=usuario.id) }}">Rejeitar</a>
+                    {% endif %}
+                    <a href="{{ url_for('editar_usuario', id=usuario.id) }}">Editar</a> |
+                    <a href="{{ url_for('excluir_usuario', id=usuario.id) }}">Deletar</a>
+                    {% else %}
+                    Sem Ações
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><a href="/">Voltar</a> | <a href="{{ url_for('adicionar_usuario') }}">Adicionar Usuário</a></p>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            navigator.sendBeacon('/logout');
+        });
+    </script>
+</body>
+
+</html>
